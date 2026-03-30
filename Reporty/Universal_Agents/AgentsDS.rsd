@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <Description />
+  <DataSet Name="Agents">
+    <Query>
+      <DataSourceReference>iCC</DataSourceReference>
+      <CommandText>SELECT [AgentId]
+      ,[DisplayName]
+      ,GroupName
+  FROM .[dbo].[Agent] WHERE Deleted=0  AND TeamName LIKE '%' ORDER BY DisplayName</CommandText>
+    </Query>
+    <Fields>
+      <Field Name="AgentId">
+        <DataField>AgentId</DataField>
+        <rd:TypeName>System.Guid</rd:TypeName>
+      </Field>
+      <Field Name="DisplayName">
+        <DataField>DisplayName</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="GroupName">
+        <DataField>GroupName</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

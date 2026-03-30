@@ -1,0 +1,4 @@
+----- Spouöù dohledovÈho systÈmu
+IF NOT EXISTS(SELECT * FROM .[dbo].[ActionTrigger] WHERE DisplayName='InboundCall Monitor')
+
+INSERT [dbo].[ActionTrigger] ([ActionTriggerId], [DisplayName], [Description], [GroupName], [CommandText], [WorkflowId], [WorkflowXaml], [Model], [Interval], [TimeMode], [TimeFrom], [TimeTo], [ReferenceKey], [LastRunUtc], [LastWorkflowInstanceId], [Suspended], [Deleted], [Offset], [LaunchTime]) VALUES (N'7793d363-f21b-4ba7-b362-d6e77f1aabd2', N'InboundCall Monitor', NULL, N'ADMIN', N'EXEC FS_Custom.dbo.IVREntryMon', NULL, NULL, N'InboundCallPhaseChanged', NULL, NULL, NULL, NULL, N'Pilot', NULL, NULL, 0, 0, NULL, NULL)

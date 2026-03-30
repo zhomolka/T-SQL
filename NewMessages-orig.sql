@@ -1,0 +1,8 @@
+/* Nové: Nové položky - pobočky NewEd */
+INSERT [DataQuery] ([DataQueryId], [DisplayName], [Description], [QueryGroup], [QuerySortExpression], [QueryText], [ManualFilter], [SnapshotInterval], [CacheInterval], [TimeLine], [Deleted])
+ VALUES(N'1f4db29f-9214-4e69-b4ef-acf92e725322',N'Nové položky - pobočky NewEd',NULL,N'Nové',N'Rank',N'SELECT DisplayName, Description, Url, Rank FROM Navigation WHERE GroupName =''NewBranchItem2''',0,60,NULL,NULL,0)
+INSERT [DataQueryColumn] ([DataQueryColumnId], [DataQueryId], [DisplayName], [Model], [TargetColumn], [TargetFormat], [UrlColumn], [UrlFormat], [GuidColumn], [Convertor], [SortExpression], [SortExpressionDesc], [NoFilter], [Width], [Rank], [Color], [Deleted], [SqlCmd], [Css], [ToolTip], [LiteralGroup], [GlyphColumn], [GlyphFormat])
+ VALUES (N'b5a641b5-87e1-4a17-95ce-d4f3ad0122e0',N'1f4db29f-9214-4e69-b4ef-acf92e725322',N'Typ',N'Image',N'Description',N'~/CustomImages/{0}',N'Url',N'http://FrontStage/ReactClient/Pages/{0}',NULL,NULL,NULL,NULL,0,25,5,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL)
+INSERT [DataQueryColumn] ([DataQueryColumnId], [DataQueryId], [DisplayName], [Model], [TargetColumn], [TargetFormat], [UrlColumn], [UrlFormat], [GuidColumn], [Convertor], [SortExpression], [SortExpressionDesc], [NoFilter], [Width], [Rank], [Color], [Deleted], [SqlCmd], [Css], [ToolTip], [LiteralGroup], [GlyphColumn], [GlyphFormat])
+ VALUES (N'0dc47f59-e1a6-4477-aac6-322a4804b0eb',N'1f4db29f-9214-4e69-b4ef-acf92e725322',N'Druh',N'HyperLink',N'DisplayName',NULL,N'Url',N'http://FrontStage/ReactClient/Pages/{0}',NULL,NULL,NULL,NULL,0,110,10,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL)
+

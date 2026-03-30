@@ -1,0 +1,1 @@
+SELECT * FROM Message WHERE CONTAINS(ToField, 'Kiszo')

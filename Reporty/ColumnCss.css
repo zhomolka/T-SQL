@@ -1,0 +1,14 @@
+﻿.dqBig { font-size:36px; font-weight:bold; }
+
+.dqWB1Normal { font-size:100px; font-weight:bold; text-align:center}
+.dqWB1Red { font-size:100px; font-weight:bold; background-color:#FF1300; }
+.dqWB1Yellow { font-size:100px; font-weight:bold; background-color:#FFFEBA; }
+
+
+.dqWB2Red { font-size:180px; font-weight:bold; background-color:#FF1300; }
+.dqWB2LightRed { font-size:180px; font-weight:bold; background-color:#F0C2C2; }
+.dqWB2Yellow { font-size:180px; font-weight:bold; background-color:#FFFEBA; }
+.dqWB2Green { font-size:180px; font-weight:bold; background-color:#E3FFDE; }
+.dqWB2Normal { font-size:180px; font-weight:bold; }
+
+.dqLabelSmall { font-size:80px; font-weight:bold; }

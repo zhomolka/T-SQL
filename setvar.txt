@@ -1,0 +1,8 @@
+:setvar FS_CUSTOM FS_CUSTOM
+:setvar ICC ICC
+:setvar ProServer ProServer
+:setvar SREC SREC
+:setvar ICC_Backup ICC_Backup
+:setvar FSVersion 'V3'
+:setvar LowPermission 0
+

@@ -1,0 +1,7 @@
+BEGIN TRANSACTION
+UPDATE   ProNGX.dbo.FileRecord  SET Time=DATEADD (hour , -1 , Time )
+WHERE        (Time > CONVERT(datetime,'2016.03.27 03:00:00')) AND (Time < CONVERT(datetime,'2016.04.12 15:13:00')) AND AgentName IS NULL
+--ROLLBACK TRANSACTION
+COMMIT TRANSACTION
+-- 27. bøezna 2016 z 2:00 na 3:00
+--SELECT DATEADD (hour , -1 , GETDATE() ) AS TestTime

@@ -1,0 +1,15 @@
+
+INSERT [DataQuery] ([DataQueryId], [DisplayName], [Description], [QueryGroup], [QuerySortExpression], [QueryText], [ManualFilter], [SnapshotInterval], [CacheInterval], [TimeLine], [Deleted], [LogLevel])
+VALUES(N'958b3585-c4f6-4242-9aaf-fe05e9391d9b',N'Sloty provozního plánu',N'Graf v OfficePlanEditoru, musí obsahovat StartTimeUtc, EndTimeUtc, SlotLimit (výška sloupce v grafu)',N'OfficePlan',N'StartTimeUtc',N'SELECT OfficeSlotId, StartTimeUtc, EndTimeUtc, SlotLimit 
+FROM OfficeSlot os
+WHERE os.OfficePlanId = @RecordId AND os.EndTimeUtc > @FilterTimeFrom AND os.StartTimeUtc < @FilterTimeTo',0,NULL,NULL,NULL,0,0)
+INSERT [DataQueryColumn] ([DataQueryColumnId], [DataQueryId], [DisplayName], [Model], [TargetColumn], [TargetFormat], [UrlColumn], [UrlFormat], [GuidColumn], [Convertor], [SortExpression], [SortExpressionDesc], [NoFilter], [Width], [Rank], [Color], [Deleted], [SqlCmd], [Css], [ToolTip], [LiteralGroup], [GlyphColumn], [GlyphFormat], [GdprSensitivity])
+VALUES (N'9604c3e9-7f36-4964-ba69-c93f9872d7b9',N'958b3585-c4f6-4242-9aaf-fe05e9391d9b',N'OfficeSlotId',N'Toggle',N'OfficeSlotId',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,1,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL, NULL)
+INSERT [DataQueryColumn] ([DataQueryColumnId], [DataQueryId], [DisplayName], [Model], [TargetColumn], [TargetFormat], [UrlColumn], [UrlFormat], [GuidColumn], [Convertor], [SortExpression], [SortExpressionDesc], [NoFilter], [Width], [Rank], [Color], [Deleted], [SqlCmd], [Css], [ToolTip], [LiteralGroup], [GlyphColumn], [GlyphFormat], [GdprSensitivity])
+VALUES (N'cc7eeaf7-727a-4fb6-9725-cdf7f995b020',N'958b3585-c4f6-4242-9aaf-fe05e9391d9b',N'StartTimeUtc',N'DateTimeUtc',N'StartTimeUtc',NULL,NULL,NULL,NULL,NULL,N'StartTimeUtc',NULL,0,60,10,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL, NULL)
+INSERT [DataQueryColumn] ([DataQueryColumnId], [DataQueryId], [DisplayName], [Model], [TargetColumn], [TargetFormat], [UrlColumn], [UrlFormat], [GuidColumn], [Convertor], [SortExpression], [SortExpressionDesc], [NoFilter], [Width], [Rank], [Color], [Deleted], [SqlCmd], [Css], [ToolTip], [LiteralGroup], [GlyphColumn], [GlyphFormat], [GdprSensitivity])
+VALUES (N'de8add11-3314-4ab8-b8cc-fe9812fd34fc',N'958b3585-c4f6-4242-9aaf-fe05e9391d9b',N'EndTimeUtc',N'DateTimeUtc',N'EndTimeUtc',NULL,NULL,NULL,NULL,NULL,N'EndTimeUtc',NULL,0,60,20,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL, NULL)
+INSERT [DataQueryColumn] ([DataQueryColumnId], [DataQueryId], [DisplayName], [Model], [TargetColumn], [TargetFormat], [UrlColumn], [UrlFormat], [GuidColumn], [Convertor], [SortExpression], [SortExpressionDesc], [NoFilter], [Width], [Rank], [Color], [Deleted], [SqlCmd], [Css], [ToolTip], [LiteralGroup], [GlyphColumn], [GlyphFormat], [GdprSensitivity])
+VALUES (N'cd01ec32-f805-45f0-8a68-ee70793fd30f',N'958b3585-c4f6-4242-9aaf-fe05e9391d9b',N'SlotLimit',N'Integer',N'SlotLimit',NULL,NULL,NULL,NULL,NULL,N'SlotLimit',NULL,0,60,30,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL, NULL)
+
+UPDATE Configuration SET ConfigurationValue='958b3585-c4f6-4242-9aaf-fe05e9391d9b' WHERE ConfigurationName='OfficeSlotsDataQueryId'

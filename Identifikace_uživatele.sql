@@ -1,0 +1,10 @@
+/* Admin: Identifikace uživatele */
+INSERT [DataQuery] ([DataQueryId], [DisplayName], [Description], [QueryGroup], [QuerySortExpression], [QueryText], [ManualFilter], [SnapshotInterval], [CacheInterval], [TimeLine], [Deleted], [LogLevel])
+ VALUES(N'd028e894-b37a-4301-a6a0-45d24e4a9d33',N'Identifikace uživatele',NULL,N'Admin',N'DisplayName',N'SELECT AgentId, DisplayName, SystemName FROM Agent WHERE AgentId=@MeAgentId',0,NULL,NULL,NULL,0,0)
+INSERT [DataQueryColumn] ([DataQueryColumnId], [DataQueryId], [DisplayName], [Model], [TargetColumn], [TargetFormat], [UrlColumn], [UrlFormat], [GuidColumn], [Convertor], [SortExpression], [SortExpressionDesc], [NoFilter], [Width], [Rank], [Color], [Deleted], [SqlCmd], [Css], [ToolTip], [LiteralGroup], [GlyphColumn], [GlyphFormat], [GdprSensitivity])
+ VALUES (N'6d2c3763-a1ad-4d0a-851b-3c67e7f52e23',N'd028e894-b37a-4301-a6a0-45d24e4a9d33',N'AgentId',N'Text',N'AgentId',NULL,NULL,NULL,NULL,NULL,N'AgentId',NULL,0,230,5,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL, NULL)
+INSERT [DataQueryColumn] ([DataQueryColumnId], [DataQueryId], [DisplayName], [Model], [TargetColumn], [TargetFormat], [UrlColumn], [UrlFormat], [GuidColumn], [Convertor], [SortExpression], [SortExpressionDesc], [NoFilter], [Width], [Rank], [Color], [Deleted], [SqlCmd], [Css], [ToolTip], [LiteralGroup], [GlyphColumn], [GlyphFormat], [GdprSensitivity])
+ VALUES (N'3c4dfae7-87ba-4292-8243-410df5c064c5',N'd028e894-b37a-4301-a6a0-45d24e4a9d33',N'Jméno agenta',N'Text',N'DisplayName',NULL,NULL,NULL,NULL,NULL,N'DisplayName',NULL,0,300,20,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL, NULL)
+INSERT [DataQueryColumn] ([DataQueryColumnId], [DataQueryId], [DisplayName], [Model], [TargetColumn], [TargetFormat], [UrlColumn], [UrlFormat], [GuidColumn], [Convertor], [SortExpression], [SortExpressionDesc], [NoFilter], [Width], [Rank], [Color], [Deleted], [SqlCmd], [Css], [ToolTip], [LiteralGroup], [GlyphColumn], [GlyphFormat], [GdprSensitivity])
+ VALUES (N'7db0b72f-11b5-43f9-ad18-0a036334b09d',N'd028e894-b37a-4301-a6a0-45d24e4a9d33',N'SystemName',N'Text',N'SystemName',NULL,NULL,NULL,NULL,NULL,N'SystemName',NULL,0,200,30,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL, NULL)
+

@@ -1,0 +1,38 @@
+SELECT YEAR(P1.TimeUtc) as DateYear, MONTH(P1.TimeUtc) as DateMonth, COUNT(P1.IssueId) as AllCases,
+
+/* Ostatni - obecne dotazy */ 
+(select Count(i.IssueId) from Issue as i where i.TopicId = 'C93D0AF5-C334-4601-8F23-60A4C4280C3E' 
+AND YEAR(i.TimeUtc) = YEAR(P1.TimeUtc) AND MONTH(i.TimeUtc) = MONTH(P1.TimeUtc) AND
+ @From <= i.TimeUtc and @To >= i.TimeUtc) as Others,
+
+/* Dotaz na davku - vyreseno ihned */  
+(select Count(i.IssueId) from Issue as i left join Contact as c on i.ContactId=c.ContactId where i.ContactId is not null and c.CompanyName IS NOT NULL and 
+TopicId = '080E05B0-68B9-4E7D-897A-8B4642932EC5' AND YEAR(i.TimeUtc) = YEAR(P1.TimeUtc) AND MONTH(i.TimeUtc) = MONTH(P1.TimeUtc) AND @From <= i.TimeUtc and @To >= i.TimeUtc) as Ration,
+  
+/* Dotaz na davku - Urgence */ 
+(select Count(i.IssueId) from Issue as i where SubTopicId IN ('964E39AF-B114-49FF-B6B4-2C4014FCB47E','36D408DB-E1F2-4097-B4A4-78AC6F8219B0','BFD0C780-EE3B-4574-A094-A87E243E2EE9') AND 
+YEAR(i.TimeUtc) = YEAR(P1.TimeUtc) AND MONTH(i.TimeUtc) = MONTH(P1.TimeUtc) AND @From <= i.TimeUtc and @To >= i.TimeUtc) as Urgence,	 
+  
+/* odpracovane smeny za mesic */
+(Select SUM(shifts) from (
+	SELECT Count(distinct AgentId) as shifts , Year(TimeUtc) as DateYear, MONTH(TimeUtc) as DateMonth, DAY(TimeUtc) as DateDay
+	FROM icc.dbo.issue where @From <= TimeUtc and @To >= TimeUtc
+	group by Year(TimeUtc), MONTH(TimeUtc), DAY(TimeUtc)) as SH
+	where SH.DateYear = YEAR(P1.TimeUtc) AND SH.DateMonth = MONTH(P1.TimeUtc) 
+	group by SH.DateYear, SH.DateMonth) as ShiftCount,
+ 
+/* Spojenych hovorù - ProKV DB */
+(SELECT Count(InboundCallId) FROM InboundCall as i WHERE CallResult='Served' AND YEAR(i.TimeUtc) = YEAR(P1.TimeUtc) AND MONTH(i.TimeUtc) = MONTH(P1.TimeUtc) 
+AND @From <= TimeUtc and @To >= TimeUtc) as ConnectedCalls,
+	
+/* Celkem hovorù - ProKV DB */
+(SELECT Count(InboundCallId) FROM InboundCall as i WHERE YEAR(i.TimeUtc) = YEAR(P1.TimeUtc) AND MONTH(i.TimeUtc) = MONTH(P1.TimeUtc)
+AND @From <= TimeUtc and @To >= TimeUtc) as AllCalls,
+
+/* Otevøené urgence */
+(SELECT Count(IssueId) FROM Issue as i WHERE SubTopicId IN ('964E39AF-B114-49FF-B6B4-2C4014FCB47E','36D408DB-E1F2-4097-B4A4-78AC6F8219B0','BFD0C780-EE3B-4574-A094-A87E243E2EE9') 
+AND Activity='Open' AND YEAR(i.TimeUtc) = YEAR(P1.TimeUtc) AND MONTH(i.TimeUtc) = MONTH(P1.TimeUtc) AND @From <= i.TimeUtc and @To >= i.TimeUtc) as OtevreneUrgence
+ 
+FROM iCC.dbo.Issue as P1 where @From <= P1.TimeUtc and @To >= P1.TimeUtc
+group by YEAR(P1.TimeUtc), MONTH(P1.TimeUtc)
+order by YEAR(P1.TimeUtc), MONTH(P1.TimeUtc)

@@ -1,0 +1,15 @@
+
+DELETE PER FROM [iCC].[dbo].[Perso] PER
+ LEFT JOIN [iCC].[dbo].[Agent] AG  ON AG.AgentId=PER.AgentId
+	WHERE 1=1
+	 AND AG.AgentId IS NULL OR AG.Deleted=1
+-----
+
+sp_updatestats 
+
+--------
+Velikost transakčního logu:
+SELECT *,
+  total_log_size_in_bytes/(1024*1024) AS LogInGB
+FROM sys.dm_db_log_space_usage
+

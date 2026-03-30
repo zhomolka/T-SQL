@@ -1,0 +1,1 @@
+INSERT INTO Icc.dbo.Navigation SELECT * from iCC_Backup.dbo.Navigation

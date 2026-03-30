@@ -1,0 +1,231 @@
+﻿
+.radkovani tr:nth-child(2n) td
+{background-color:#f2f2f2;}
+
+.logo
+{
+background-color:white;
+}
+.panel-default > .panel-heading{font-size:13px;
+font-weight:bold;
+color: #444343;
+padding-bottom:2px;
+padding-top:4px;
+border-top-left-radius:0px;}
+
+.WBYelowlight {background-color:#fafca1;font-size:50px;text-align:center;height:150px;display: table-cell;Vertical-align:middle;}
+.WBYelowlight td {border: 0; border-top: 0 !important}
+.WBYelowHeavy {background-color:#e8e56a;font-size:20px;text-align:center;height:40px;display: table-cell;Vertical-align:middle;}
+.WBYelowHeavy td {border: 0; border-top: 0 !important}
+
+.WBWhite td:first-child {background-color:#ffffff;font-size:15px;text-align:left;}
+.WBWhite td {background-color:#ffffff;font-size:15px;text-align:right;}
+.WBGreyLight {background-color:#eeeeee;font-size:16px;text-align:center;}
+.WBBlueLight {background-color:#cfe8fc;font-size:50px;text-align:center;}
+.WBBlueHeavy {background-color:#a2badb;font-size:20px;text-align:center;height:30px;display: table-cell;Vertical-align:middle;}
+.WBBlueHeavy td {border: 0; border-top: 0 !important}
+
+.WBRedLight {background-color:#ffcccc;font-size:50px;text-align:center;height:150px;display: table-cell;Vertical-align:middle;}
+.WBRedLight td {border: 0; border-top: 0 !important}
+.WBRedHeavy {background-color:#d16a90;font-size:20px;text-align:center;height:40px;display: table-cell;Vertical-align:middle;}
+.WBRedHeavy td {border: 0; border-top: 0 !important}
+
+.WBOrangeLight {background-color:#fff3cc;font-size:16px;text-align:center;}
+.WBGreenLight {background-color:#a5f3bb;font-size:16px;text-align:center;}
+.WBGreenMedium {background-color:#00ff84;font-size:16px;text-align:left;}
+
+.dqBig { font-size:22px;}
+.dqMedium { font-size:20px;}
+.dqSmall { font-size:12px;}
+
+.dqBigCenter { font-size:22px;text-align: center;}
+.dqMediumCenter { font-size:20px;text-align: center;}
+.dqSmallCenter { font-size:12px;text-align: center;}
+
+#ContentWebPartManager_wp1593804481_wp561037755_DataQueryGridView .dataQueryHeader { font-size:24px; }
+
+#ContentWebPartManager_wp465311448_wp1439207477_DataQueryGridView .dataQueryHeader { font-size:24px;  }
+
+#WebPart_wp1311809330 .dataQueryGrid a:hover { color: black; font-weight: bold; text-shadow: 1px 1px 3px  #d9d9d9}
+
+#WebPart_wp856870905 .dataQueryGrid a:hover { color: black; font-weight: bold; text-shadow: 1px 1px 3px  #d9d9d9}
+
+#WebPart_wp924445236 .dataQueryGrid a:hover { color: black; font-weight: bold; text-shadow: 1px 1px 3px  #d9d9d9}
+
+.Ready { background-color: #92d050;
+	margin-left: 13px;
+	margin-right: 12px;
+	margin-bottom: 6px; 
+	padding:0;
+	border-style: solid;
+	border-color: black;
+	font-size:30px;
+	border-width: 1px;
+text-align: center;}
+
+.Ring { background-color: #92d050;
+	margin-left: 13px;
+	margin-right: 12px;
+	margin-bottom: 6px; 
+	padding:0;
+	border-style: solid;
+	border-color: black;
+	font-size:30px;
+	border-width: 1px;
+text-align: center;}
+
+.Free { background-color: #92d050;
+	margin-left: 13px;
+	margin-right: 12px;
+	margin-bottom: 6px; 
+	padding:0;
+	border-style: solid;
+	border-color: black;
+	font-size:30px;
+	border-width: 1px;
+text-align: center;}
+
+.Transfer{ background-color: #ff0000;
+	margin-left: 13px;
+	margin-right: 12px;
+	margin-bottom: 6px; 
+	padding:0;
+	border-style: solid;
+	border-color: black;
+font-size:30px;
+	border-width: 1px;
+text-align: center;}
+
+.Busy { background-color: #ff0000;
+	margin-left: 13px;
+	margin-right: 12px;
+	margin-bottom: 6px; 
+	padding:0;
+	border-style: solid;
+	border-color: black;
+font-size:30px;
+	border-width: 1px;
+text-align: center;}
+
+.Pause { background-color: #ffc000;
+	margin-left: 13px;
+	margin-right: 12px;
+	margin-bottom: 6px; 
+	padding:0;
+	border-style: solid;
+	border-color: black;
+font-size:30px;
+	border-width: 1px;
+text-align: center;}
+
+.Logoff{
+	
+	margin-left: 13px;
+	margin-right: 12px;
+	margin-bottom: 6px; 
+	padding:0;
+	border-style: solid;
+	border-color: black;
+font-size:30px;
+	border-width: 1px;
+text-align: center;
+}
+
+.dqDatum
+{ 
+font-size:30px;
+color:white;
+text-align: center;
+font-weight:bold;
+}
+
+.dqTalk { font-size:56px; font-weight:bold; background-color: #FFFF80; }
+.dqIVR { font-size:56px; font-weight:bold; background-color: #DED9DB; }
+.dqWait { font-size:56px; font-weight:bold; background-color: #C0C0FF; }
+.dqAvail { font-size:56px; font-weight:bold; background-color: #C0FFC0; }
+.dqOver { font-size:56px; font-weight:bold; background-color: #FF8080; }
+
+.clientAlertPart {
+	font-size: 12px;
+}
+
+.clientAlertPart strong {
+	font-size: 100px;
+	color: red;
+}
+
+.MISTO0 div {
+/*	margin-left: 13px;
+	margin-right: 12px;
+	margin-bottom: 6px; */
+	padding:0;
+	background-color:#FFFFFF;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+.MISTO1 div {
+	/* color: #908000; */
+/*	margin-left: 13px;
+	margin-right: 12px;
+	margin-bottom: 6px; */
+	padding:0;
+	background-color:#FFFF00;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+}
+
+.Free { background-color: green;
+	margin-left: 13px;
+	margin-right: 12px;
+	margin-bottom: 6px; */
+	padding:0;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;}
+
+.Busy { background-color: red;
+	margin-left: 13px;
+	margin-right: 12px;
+	margin-bottom: 6px; */
+	padding:0;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;}
+
+.Pause { background-color: orange;
+	margin-left: 13px;
+	margin-right: 12px;
+	margin-bottom: 6px; */
+	padding:0;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;}
+
+.Pause { background-color: #009900;
+ }
+.Transfer { background-color: #009900; }
+.Transer { background-color: #009900; }
+.Ring { background-color: #009900; }
+.Busy { background-color: #009900; }
+.OutOfOrder { background-color: #660066; }
+
+.BarvaZapojen { background-color: #b3ffb3;
+	font-size:12px
+	;text-align: center;}
+
+.BarvaOdpojen { background-color: #ffc2b3;
+	font-size:12px;
+	text-align: center;}
+
+.BarvaNemaSkil { background-color: white;
+	font-size:12px;
+	text-align: center;}
+
+.BarvaZapojenLeft { background-color: #b3ffb3;
+	font-size:12px}
+
+.BarvaOdpojenLeft { background-color: #ffc2b3;
+
+	font-size:12px;}

@@ -1,0 +1,67 @@
+/****** Script for SelectTopNRows command from SSMS  ******/
+USE iCC
+GO
+DECLARE @from AS date=convert(datetime, '2018.06.01')
+DECLARE @to AS date=convert(datetime, '2018.06.30')
+DECLARE @today AS Date=GETDATE()
+DECLARE @LastWeek AS date=GETDATE()-7
+DECLARE @ThisWeek AS date=GETDATE()-3
+DECLARE @ThisMonth AS date=GETDATE()-7
+DECLARE @MeAgentId AS UNIQUEIDENTIFIER=(SELECT TOP 1 AgentId FROM Agent WHERE Activity='Ready')
+DECLARE @Now AS datetime=GETDATE()
+DECLARE @LastHour AS datetime=GETDATE()-0.04
+DECLARE @LastDay AS date=GETDATE()-5
+DECLARE @Number AS integer
+DECLARE @GroupInterval AS integer=44640
+DECLARE @RoundInterval AS integer=@GroupInterval
+DECLARE @Version  AS integer=1
+DECLARE @AgentId AS UniqueIdentifier = 'ddbc22e5-af73-4387-a5f4-77cd11740afe' -- Paní Balážová
+SET @AgentId ='f0ad4d7e-c9e6-46c2-962e-c178370b3097' -- Paní Ganev
+
+/**/
+SET @from=GETDATE()-5 -- @today--
+SET @to=GETDATE()
+
+SELECT * FROM (
+SELECT DISTINCT TOP 100000 
+	  CAE.[TimeLocal]
+	  ,DATEDIFF(ss,CAE.TimeLocal,ISNULL(CAE2.TimeLocal,IC.EndTime)) AS SecFromPilotToIVR
+	  --,CAE.[ResultData]
+      --,CAE.[EventType]
+	  --,WP.Number AS WPNumber
+	  --,IC.Callernumber
+	  ----,IIF(CAE.WorkplaceId<>IC.WorkplaceId OR IC.WorkplaceId IS NULL,'YES','') AS Divert_Failed
+	  ,CAE.InboundCallId
+	  ,IC.CallResult
+
+   FROM .[dbo].[CallEvent] CAE
+  LEFT JOIN (SELECT 
+	  MIN(CAE.[TimeLocal]) AS TimeLocal
+	  ,CAE.InboundCallId
+   FROM .[dbo].[CallEvent] CAE
+  WHERE 1=1
+	AND CAE.EventType='IvrScriptA'
+    AND CAE.[TimeLocal]>@from
+	GROUP BY InboundCallId) AS CAE2 ON CAE.InboundCallId=CAE2.InboundCallId
+	LEFT JOIN .[dbo].[InboundCall] IC ON IC.InboundCallid=CAE.InboundCallid
+  WHERE 1=1
+	AND CAE.EventType IN ('Pilot') --and ResultData like 'Divert not arrived%'
+    AND CAE.[TimeLocal]>@from
+	AND (CAE2.InboundCallId IS NOT NULL OR IC.CallResult<>'Served')
+--	AND (CAE2.InboundCallId IS NOT NULL OR CAE.WorkplaceId<>IC.WorkplaceId OR IC.WorkplaceId IS NULL)
+	--AND CAE3.InboundCallId IS NULL -- Nešlo o zmeškaný hovor
+	--AND CAE4.InboundCallId IS NULL -- Nešlo o hovor ukonèený zákazníkem
+ --   AND CAE.InboundCallId IS NOT NULL -- Zatím jen pøíchozí hovory
+	--AND OC.CallerNumber='00902297141'
+	 --AND ProjectId='5B9F0380-64D3-4151-A91B-372E7ED4A953'
+   --AND  EventType='NewCall'
+   --AND CAE.AgentId=@AgentId
+    --AND  ResultData='Auto'
+    --AND  ReferenceData='Update'
+    --AND CAE.OutboundCallId IS NOT NULL
+	--AND OC.OutboundCallId='a200ac00-2b78-eb11-b7fb-005056a0e001'
+	--AND CAE.InboundCallId='5A998DC2-18E5-EE11-BF2C-005056A91C2C'
+    --AND (SELECT TOP 1 AgentId FROM CallEvent CAE2 WHERE CAE2.OutboundCallId=CAE.OutboundCallId AND CAE2.TimeLocal<CAE.TimeLocal ORDER BY TimeLocal DESC)<>CAE.AgentId
+	) AS Phase1
+	WHERE SecFromPilotToIVR > 3
+  ORDER BY [TimeLocal] -- WP.Number --
