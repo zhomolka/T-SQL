@@ -2100,7 +2100,7 @@ CREATE PROCEDURE [dbo].[FSC_SET_Oauth2]
 
 AS
 BEGIN
--- EWSHost {"HostAddress": "outlook.office365.com",   "UserName": "info@planeo.sk",   "ClientID": "175721ff-1003-40f3-a4bd-0ed9545431e8",   "Password": "K0Y8Q~yxqKyYtUACIeMbtCVfjpmfEOSLe1m9YdbK",   "AccessToken": "https://login.microsoftonline.com/787daf76-78bb-42bb-b662-72538b9dcb0f/oauth2/v2.0/token",   "ReportParam": "https://outlook.office365.com/.default",   "AuthType": "OAuth20",   "Throttling": 5}
+-- EWSHost {"HostAddress": "outlook.office365.com",   "UserName": "info@company.sk",   "ClientID": "XXXXX-XXXX-XXXX-XXXX-XXXXXXXXXX",   "Password": "Secret-Password",   "AccessToken": "https://login.microsoftonline.com/XXXXXX-XXXXX-XXXX-XXXX-XXXXXXXXX/oauth2/v2.0/token",   "ReportParam": "https://outlook.office365.com/.default",   "AuthType": "OAuth20",   "Throttling": 5}
 DECLARE @GatewayId AS UNIQUEIDENTIFIER=(SELECT TOP 1 GatewayId FROM $(iCC)..Gateway WHERE Deleted=0 
    and Description='EWS/Oauth2' AND ISNULL(InDevice,'') = '' AND ISNULL(OutDevice,'') = ''  
  )
