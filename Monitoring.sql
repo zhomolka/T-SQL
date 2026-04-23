@@ -167,191 +167,112 @@ BEGIN
 	RETURN (SELECT ConfigurationValue FROM $(MonitorDB).[dbo].[CONFIGURATION]  WHERE ConfigurationName=@ConfigurationName)
 END
 GO
-THROW 50000, 'Plánovaný konec skriptu', 1; --´======================================
 
+IF object_id('WriteParam') IS NOT NULL
+ DROP  Procedure  [dbo].[WriteParam]
+GO
+
+-- =============================================
+-- Author:		<Zbyněk Homolka>
+-- Create date: <17.05.2017>
+-- Description:	<Zápis parametru do Configuration>
+-- Test 6.5.2020
+-- =============================================
+CREATE PROCEDURE [dbo].[WriteParam]
+ @ConfigurationName AS NVARCHAR(50),
+ @ConfigurationValue AS NVARCHAR(MAX),
+ @Description AS NVARCHAR(800)
+AS
+BEGIN
+--DECLARE @MyAgentId AS UniqueIdentifier = 'ffee47c8-da99-47d3-b4e2-ca92b624ac95' -- Admin ID
+    IF NOT EXISTS (SELECT ConfigurationId FROM $(MonitorDB).[dbo].[CONFIGURATION]  WHERE ConfigurationName=@ConfigurationName)
+	  BEGIN
+	    INSERT INTO $(MonitorDB).[dbo].[Configuration]
+           (
+            [ConfigurationName]
+           ,[ConfigurationValue]
+           ,[Description])
+     VALUES
+           (@ConfigurationName,
+           @ConfigurationValue,
+           @Description
+         )
+	  END
+    ELSE
+	  BEGIN
+        update $(MonitorDB).[dbo].[Configuration] 
+         SET ConfigurationValue = @ConfigurationValue
+         WHERE  ConfigurationName=@ConfigurationName
+      END
+END
+GO
+
+
+
+/* ===================================  M A I N   P R O C E D U R E  ============================= */
+
+IF object_id('CheckSys') IS NOT NULL
+ DROP  PROCEDURE  [dbo].CheckSys
+GO
+CREATE PROCEDURE [dbo].[CheckSys] 
+AS
+BEGIN
+   declare @ProcVer as nvarchar(35) = ' Inspection function ver: $(Version)'
+   
 IF .dbo.GiveParam('TOCC3')=''
   BEGIN
 	  UPDATE $(MonitorDB).dbo.Configuration 
-        SET  ConfigurationValue='wanek@atlantis.cz;hynek@atlantis.cz' 
+        SET  ConfigurationValue='servis3@yourdomain.cz' 
       WHERE ConfigurationName='TOCC3'
-	  UPDATE .dbo.Monitor SET Inform3=1 WHERE Command='FSCRecordings()'
   END
-  	UPDATE $(MonitorDB).dbo.Configuration 
-    SET  ConfigurationValue=REPLACE(ConfigurationValue,'servis@atlantis.cz','')
-    WHERE ConfigurationName='TOCC2' AND ConfigurationValue LIKE '%servis@atlantis.cz%'
 
- 
----------------------------------
-IF NOT EXISTS(
-SELECT * FROM INFORMATION_SCHEMA.COLUMNS
-  WHERE TABLE_NAME='Commands' AND COLUMN_NAME = 'GroupName'	)
-ALTER TABLE Commands
- ADD GroupName NVARCHAR(6) NULL
-
- 
-IF object_id('Environment_Setup') IS NULL
- BEGIN
-  DECLARE @CreateCustom AS NVARCHAR(500)=
- '  CREATE PROCEDURE [dbo].[Environment_Setup]
-	 AS
-	  BEGIN
-       update $(MonitorDB).[dbo].[Agent] 
-         SET systemName = systemName -- ''hcg\sk-adm-zho1020''
-		      ,Supervisor=1
-         WHERE  DisplayName LIKE ''%Zbyn%'' AND DisplayName LIKE ''%Homolka%'' AND Deleted=0
-	  END'
-    EXEC (@CreateCustom)
-  END
-GO
-
- EXEC  [dbo].[Environment_Setup] -- Nastavení osobního prostredí
-
- IF object_id('MimoPrac') IS NULL
- BEGIN
-  DECLARE @CreateCustom AS NVARCHAR(500)=
- ' 
- CREATE FUNCTION [dbo].[MimoPrac](@Redirector NVARCHAR(24),@MyTime AS Datetime)
-   RETURNS int
-	 AS
-	  BEGIN
-		 RETURN 0
-	  END'
-    EXEC (@CreateCustom)
-  END
-GO
-
-IF object_id('CustomCheckint') IS NULL
- BEGIN
-  DECLARE @CreateCustom AS NVARCHAR(500)=
- ' 
- CREATE FUNCTION [dbo].[CustomCheckint](@TestVer AS NVARCHAR(2), @MyLimit as Integer)
-   RETURNS int
-	 AS
-	  BEGIN
-		 RETURN 1
-	  END'
-    EXEC (@CreateCustom)
-  END
-GO
 declare @TOCC as nvarchar(200) =.dbo.GiveParam('TOCC')
 	IF @TOCC IS NULL
 	     BEGIN
-		   SET @TOCC  = 'homolka@atlantis.cz'
-		   EXEC [dbo].[FSC_WriteParam] 'TOCC', @TOCC, 'E-mail addresses to which recorded problems should be sent'
+		   SET @TOCC  = 'servis@yourdomain.cz'
+		   EXEC [dbo].[WriteParam] 'TOCC', @TOCC, 'E-mail addresses to which recorded problems should be sent'
 		 END
   declare @TOCC2 as nvarchar(200) =.dbo.GiveParam('TOCC2')
 	IF @TOCC2 IS NULL AND 1=2
 	     BEGIN
 		   SET @TOCC2  = 'servis@atlantis.cz'
-		   EXEC [dbo].[FSC_WriteParam] 'TOCC2', @TOCC2, 'E-mail addresses to which recorded problems should be sent'
+		   EXEC [dbo].[WriteParam] 'TOCC2', @TOCC2, 'E-mail addresses to which recorded problems should be sent'
 		 END
   declare @TOCC3 as nvarchar(200) =.dbo.GiveParam('TOCC3')
 	IF @TOCC3 IS NULL
 	     BEGIN
 		   SET @TOCC3  = ''
-		   EXEC [dbo].[FSC_WriteParam] 'TOCC3', @TOCC3, 'E-mail addresses to which recorded problems should be sent'
-		 END
---
-
-IF  db_name() ='ICC'
-   BEGIN
-      PRINT ' WARNING - Objects were created in wrong DB !!!!!!!!!!!!!!!!!!!!'
-   END 
-
--- Mode is by using a combination of keys ALT+Q+M
-
-/****** Object:  StoredProcedure [dbo].[CheckRecAndEmlActivity2]    Script Date: 27. 8. 2019 12:54:19 ******/
--- Rekonfigurace EventLog:
-
-/****** Object:  Table [dbo].[Eventlog]    Script Date: 28. 6. 2016 12:12:34 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-IF object_id('CheckRecAndEmlActivity2') IS NOT NULL
- DROP  PROCEDURE  [dbo].CheckRecAndEmlActivity2
-GO
-
-/* ===================================  S T A R T    O F   M A I N   P R O C E D U R E  ============================= */
+		   EXEC [dbo].[WriteParam] 'TOCC3', @TOCC3, 'E-mail addresses to which recorded problems should be sent'
+		 END;
 
 
--- Upravil ZbH 17.7.2018
--- Nyní probíhá stálé zdokonalování funkce
-CREATE
---ALTER
- PROCEDURE [dbo].[CheckRecAndEmlActivity2] 
-AS
-BEGIN
-   declare @ProcVer as nvarchar(35) = ' Inspection function ver: $(Version)'
-   
-  -- SELECT 'Start '+RIGHT(CONVERT(NVARCHAR(28),GETDATE(),120),8) AS Zpráva
      ---  Texty pro komunikaci s uživatelem: -------------------------------------------------------------------------------------------------------------
        DECLARE @AlerteMails AS NVARCHAR(200)='Email addresses for receiving discovered issues'
-       DECLARE @AgentIncorStat AS NVARCHAR(200)='Agent %s has an incorrect phone status'
        DECLARE @InspectPlease AS NVARCHAR(200)='Please check'
-       DECLARE @AgentNotReady AS NVARCHAR(200)='Agent %s that should be permanently logged on is not ready right now'
-	   DECLARE @DuplicWPMess AS NVARCHAR(200)='Duplicate Workplace %s '
-       DECLARE @AgentwWasLogoff AS NVARCHAR(200)='Agent %s was logged off'
-       DECLARE @AutoLogon AS NVARCHAR(200)='Automatic logon performed'
-       DECLARE @NoTemplate AS NVARCHAR(200)='Missing template for e-mail auto-answer'
 
 
 	-----------------------------------------------------------------------------------------------------------------------------------------------------
 	DECLARE @StartTime AS Datetime = GETDATE()
-	--exec FSCMonCheck 'Start ',@StartTime
 	declare @Today as datetime = GETDATE()
 
     EXEC  .[dbo].[WriteEvent] 1,'CheckFS','Entry point'
 
-	/* Tuto část bude možno vypustit : ---------------------------------------------------------------------------------------*/
-	declare @TGT as nvarchar(200) = 'servis@atlantis.cz'
+	declare @TGT as nvarchar(200) = 'servis@yourdomain.cz'
 
 	
 
-    DECLARE @EndTime AS datetime = (SELECT MAX(EndTime) FROM $(MonitorDB).[dbo].[Message] WITH (NOLOCK)
-	WHERE MessageType='Email' AND Direction='O' AND  ReceivedSentTime IS NOT NULL AND GatewayId IS NOT NULL)
-
-	declare @MessageId as uniqueidentifier =
-	(SELECT TOP 1 MessageId FROM $(MonitorDB).[dbo].[Message] WITH (NOLOCK) WHERE Direction='O' AND EndTime=@EndTime)
-	 declare @GW as uniqueidentifier = (SELECT TOP 1 [GatewayId] FROM $(MonitorDB).[dbo].[Message] WITH (NOLOCK)
-	 WHERE MessageId=@MessageId)
-	 declare @GWN as nvarchar(150) = (SELECT TOP 1 PilotAddress FROM $(MonitorDB).[dbo].[Gateway] WITH (NOLOCK) WHERE GatewayId=@GW)
-	 declare @Company as nvarchar(200) =.dbo.GiveParam('Company')
-	 IF @Company IS NULL
-	     BEGIN
-		    EXEC [dbo].[FSC_WriteParam] 'Company', @GWN, 'Company Name'
-		 END
-
-    DECLARE @RecordingsLess AS Integer=.dbo.GiveParam('RecordingsLess')
-	   IF @RecordingsLess IS NULL
-	     BEGIN
-		   SET @RecordingsLess=5
-		   EXEC [dbo].[FSC_WriteParam] 'RecordingsLess', @RecordingsLess, 'Number of tolerated calls without recordings'
-		 END
-   DECLARE @PairingTime AS Integer=.dbo.GiveParam('PairingTime')
-	   IF @PairingTime IS NULL
-	     BEGIN
-		   SET @PairingTime=10 -- Minutes
-		   EXEC [dbo].[FSC_WriteParam] 'PairingTime', @PairingTime, 'Time required to pair calls with recordings'
-		 END
+    DECLARE @EndTime AS datetime 
+	declare @Company as nvarchar(200) =.dbo.GiveParam('Company')
    DECLARE @ServiceGateWay AS  NVARCHAR(10)=.dbo.GiveParam('ServiceGateWay')
 	   IF @ServiceGateWay IS NULL
 	     BEGIN
-		   EXEC [dbo].[FSC_WriteParam] 'ServiceGateWay', '', 'Service GateWay'
+		   EXEC [dbo].[WriteParam] 'ServiceGateWay', '', 'Service GateWay'
 		 END
 
-
-
-     DECLARE @AgentName AS NVARCHAR(50)
 	 DECLARE @String1 AS NVARCHAR(50)
 	 DECLARE @String2 AS NVARCHAR(50)
 	 declare @Command AS NVARCHAR(500)
    --------------------------------------------------------------------------------------------------------------------------
-    DECLARE @Agentid AS UniqueIdentifier
-	DECLARE @workplaceid AS UniqueIdentifier
-	DECLARE @Statusid AS UniqueIdentifier 
     DECLARE @Counter AS Integer=3
 	declare @EmlMsg as nvarchar(300)
 	declare @Subject as nvarchar(200)
@@ -364,23 +285,14 @@ BEGIN
 	IF @Holiday IS NULL
 	     BEGIN
 		   SET @Holiday  = 'OUT_OF_OFFICE'
-		   EXEC [dbo].[FSC_WriteParam] 'Holiday', @Holiday, 'Name of holiday group'
+		   EXEC [dbo].[WriteParam] 'Holiday', @Holiday, 'Name of holiday group'
 		 END
 
-
 	declare @Mark as int = 77
-	/*IF (NOT EXISTS(SELECT TOP 1 1 FROM $(MonitorDB).dbo.Holiday as H where H.HolidayGroupName='INSPECTION' AND H.TimeMode='SingleDay' ))
-	  insert into $(MonitorDB).dbo.Holiday([DisplayName],[HolidayGroupName],[TimeMode],[TimeFrom],[TimeTo])
-		values('CheckRecAndEml','INSPECTION','SingleDay',CONVERT(DateTime,'2018.08.01 8:00'),CONVERT(DateTime,'2018.08.01 17:00')) */
-
-
-	--IF(EXISTS(SELECT * FROM $(MonitorDB).dbo.Holiday as H where H.HolidayGroupName='INSPECTION' AND H.TimeMode='SingleDay' AND (.dbo.TimeCompare2(H.TimeFrom,'>',GETDATE())=1 OR .dbo.TimeCompare2(H.TimeTo,'<',GETDATE())=1))) RETURN
-	IF(EXISTS(SELECT * FROM $(MonitorDB).dbo.Holiday as H WITH (NOLOCK) where H.HolidayGroupName=@Holiday AND H.TimeMode='SingleDay' AND CAST(H.TimeFrom as DATE)=CAST(@Today AS DATE))) OR
-	(EXISTS(SELECT * FROM $(MonitorDB).dbo.Holiday as H WITH (NOLOCK) where H.HolidayGroupName=@Holiday AND H.TimeMode='DayInYear' AND DATEPART(DAY,H.TimeFrom)=DATEPART(DAY,@Today) AND DATEPART(MONTH,H.TimeFrom)=DATEPART(MONTH,@Today))) OR
 	-- Pokud tam jsou mé neodeslané maily mladší 24hodin, neodesílám další
-	(EXISTS(SELECT * FROM $(MonitorDB).dbo.Message as M WITH (NOLOCK) where M.Messagetype='Email' AND MessagePhase='Scheduled' AND M.Mark=@Mark AND M.TimeUTC>DATEADD(DAY,-1,GETUTCDATE()))) 
+	IF (EXISTS(SELECT * FROM $(MonitorDB).dbo.Message as M WITH (NOLOCK) where M.Messagetype='Email' AND MessagePhase='Scheduled' AND M.Mark=@Mark AND M.TimeUTC>DATEADD(DAY,-1,GETUTCDATE()))) 
 	  BEGIN
-	    EXEC  .[dbo].[WriteEvent] 1,'CheckFS','End of procedure'
+	    EXEC  .[dbo].[WriteEvent] 1,'CheckSys','End of procedure'
 	    RETURN --====================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	  END
 
@@ -400,7 +312,7 @@ BEGIN
 	declare @LastWeekAgo as datetime = DATEADD(DAY, -7, @Last )
 	declare @OneHourAgo as datetime = DATEADD(Hour, -1, @Now )
     DECLARE @from AS datetime=DATEADD(Hour,-3,GETDATE())
-    DECLARE @to AS datetime=DATEADD(Minute,-@PairingTime,GETDATE())
+    DECLARE @to AS datetime=DATEADD(Minute,-10,GETDATE())
     DECLARE @UTCDif AS Integer = (SELECT TOP 1 DATEDIFF(HOUR,PilotTime,TimeUTC) FROM $(MonitorDB).dbo.InboundCall WITH (NOLOCK) ORDER BY TIMEUTC DESC)
     DECLARE @fromUTC AS datetime=DATEADD(Hour,@UTCDif,@from)
     DECLARE @toUTC AS datetime=DATEADD(Hour,@UTCDif,@to)
@@ -411,128 +323,10 @@ BEGIN
 	declare @Severity AS Integer
 	declare @OpakpoMin AS Integer = 30 -- Opakuj chybové hlášení po x minutách
 	exec FSCMonCheck 'Starting part completed',@StartTime
-   --SELECT 'Starting part completed '+RIGHT(CONVERT(NVARCHAR(28),GETDATE(),120),8) AS Zpráva	
-
---IF db_id('SREC') IS NOT NULL 
---  BEGIN
-
-   -- Dopárování nahrávek:
-  -- DECLARE @PairRecord AS NVARCHAR(5) = 'true'
-  -- EXEC .dbo.GiveParam2 'PairRecord', @PairRecord OUTPUT,'Pair RecordingLess Calls with Recordings'
-  ----IF .dbo.GiveParam3('PairRecord', 'true' ,'Pair RecordingLess Calls with Recordings')='true' - nedovoluje syntaxe
-  ----SELECT 'Before  FSC_HledNesparIn '+RIGHT(CONVERT(NVARCHAR(28),GETDATE(),120),8) AS Zpráva
-  --exec FSCMonCheck 'Before  FSC_HledNesparIn',@StartTime
-  --IF @PairRecord  = 'true'
-  -- BEGIN
-  --   EXEC  .[dbo].FSC_HledNesparIn
-  --   --EXEC  .[dbo].HledNesparOut
-	 --exec FSCMonCheck 'Behind  FSC_HledNesparIn',@StartTime
-  -- END
-  --END
-    IF @GW IS NOT NULL  
-	 BEGIN
-	   DECLARE @NoSent as int = (select count(*) from $(MonitorDB).dbo.Message as M WITH (NOLOCK) where M.Direction='O' 
-	   AND (MessagePhase='Scheduled' OR MessagePhase='Failed') AND M.MessageType='Email' AND M.TimeUtc<=@Last AND
-	   M.TimeUtc>=@DayAgo AND M.ReceivedSentTime IS NOT NULL AND M.ReceivedSentTime>=@DayAgo
-	   AND RemoteAddress IS NOT NULL -- 28.5.2019 Odfiltrování chybných mailů z webu
-	   and (ISNULL(ScheduledTime,.dbo.TimeUTC_Local(TimeUTC))  < @Last)--Kubat, podminka pro naplanovane maily a jejich zpozdene odeslani
-	   --and MessageResult = 'Active' -- ZbH 27.3.2019
-	   )
-	   DECLARE @NoSentTreshold AS Integer=.dbo.GiveParam('NoSentTreshold')
-	   IF @NoSentTreshold IS NULL
-	     BEGIN
-		   SET @NoSentTreshold=10
-		   EXEC [dbo].[FSC_WriteParam] 'NoSentTreshold', @NoSentTreshold, 'Hranice, při níž se nahlašuje počet neodeslaných mailů (Scheduled, Failed)'
-		 END
-	   IF @NoSent>@NoSentTreshold
-	    BEGIN
-		   -- Pokusím se zjistit důvod neodeslání
-
-			select TOP 1 @RemoteAddress=RemoteAddress,@ResultData=ResultData from $(MonitorDB).dbo.Message as M WITH (NOLOCK) 
-			   LEFT JOIN $(MonitorDB).dbo.MessageEvent as ME WITH (NOLOCK) ON M.MessageId=ME.MessageId AND EventType='Ndr'
-			where M.Direction='O' AND (MessagePhase='Scheduled' OR MessagePhase='Failed') AND M.MessageType='Email' AND M.TimeUtc<=@Last AND M.TimeUtc>=@DayAgo
-			IF @RemoteAddress IS NOT NULL
-			  BEGIN
-				SET @Specif = 'to address= '+@RemoteAddress
-				EXEC [dbo].[FSC_ErrorLogProc] 'undelivery message',@Specif,@ProcVer,@ResultData,0,240
-			  END
-            ELSE
-			  BEGIN
-				SET @Specif = ', count='+ CONVERT(nvarchar(10),@NoSent)
-				EXEC [dbo].[FSC_ErrorLogProc] 'unsent emails',@Specif,@ProcVer,@EmlMsg,2,60
-							-- Pokusím se problém vyřešit
-				UPDATE $(MonitorDB).[dbo].[Message] SET MessageResult='Active'
-				 WHERE  TimeUtc>@Yesterday AND Direction='O' AND MessagePhase='Scheduled' AND MessageResult='Closed' -- Pokud agent zadal odeslání uzavřeného mailu
-			  END
-
-          END
-		---- Kontrola mailů přodělených agentům, kteří nejsou v práci
-  --      IF (.dbo.CustomCheck('NV',@WeekAgo)>0)
-		-- BEGIN
-		--   SET @Specif = ''
-		--   EXEC [dbo].[FSC_ErrorLogProc] 'emails assigned to agents who are not at work',@Specif,@ProcVer,@EmlMsg,0,1440
-  --       END
-	
-	 END
 
  SET @String1=NULL
  SET @String2=NULL
-  -- Kontrola synchronizačních procedur atd.
-/*  DECLARE @Procedura AS NVARCHAR(50)
-  DECLARE @Popis AS NVARCHAR(900)
-  DECLARE @DatumCas AS Datetime
-   exec FSCMonCheck 'Before SystemTests',@StartTime
 
-SET @Specif = ''
-DECLARE My_cursor CURSOR FOR   
- SELECT DISTINCT TOP 100 Procedura,Popis,DatumCas  FROM .[dbo].[Eventlog] WITH (NOLOCK)
-  WHERE DatumCas>@Yesterday AND DatumCas<@Pred15min AND (Popis IN ('Vstupní bod','Entry point')
-   /*OR Procedura='SystemTests'*/)
-   OPEN my_cursor 
-  FETCH NEXT FROM My_cursor INTO @Procedura,@Popis,@DatumCas    
-  WHILE @@FETCH_STATUS = 0  
-    BEGIN
- 	  IF @Procedura  IS NOT NULL
-		BEGIN
-	       IF @Procedura='SystemTests' OR
-		   NOT EXISTS(SELECT TOP 1 Procedura  FROM .[dbo].[Eventlog] WITH (NOLOCK) WHERE DatumCas>@Yesterday AND Popis IN ('Konec procedury','End of procedure') AND Procedura=@Procedura)
-		     BEGIN
-			  SET @Severity=CASE WHEN LEFT(@Popis,15)='Warning : Drive' THEN 1 ELSE 0 END
-			  SET @EmlMsg=@InspectPlease
-			  IF  @Procedura='SystemTests'
-			    BEGIN
-			      SET @Subject=CASE WHEN @Severity=1 THEN LEFT(@Popis,17) ELSE @Popis+' at '+CONVERT(NVARCHAR(20),@DatumCas,0) END
-				  -- Označím si zprávu jako zpracovanou
-					UPDATE [dbo].[Eventlog]
-					   SET [Procedura] = 'STProcessed'
-					 WHERE DatumCas>@Yesterday AND Procedura='SystemTests' AND Popis=@Popis --DatumCas=@DatumCas
-                END
-			  ELSE 
-			   SET @Subject=' Procedure: '+RTRIM(@Procedura)+' is not finished correctly.'
-			  SET @Specif = CASE WHEN @Severity=1 THEN SUBSTRING(@Popis,18,50) ELSE '' END
-			  IF @Severity=0 OR @DatumCas>DATEADD(Hour,-2,GETDATE())
-			    EXEC [dbo].[FSC_ErrorLogProc] @Subject,@Specif,@ProcVer,@EmlMsg,@Severity,1000
-
-			 END
-		END
-		FETCH NEXT FROM My_cursor INTO @Procedura,@Popis,@DatumCas  
-    END
-  CLOSE My_cursor;  
-  DEALLOCATE My_cursor; */
--- Kontrola nastavení GDPR:
-    SET @EmlMsg=NULL -- .[dbo].InspectGDPR()
-	IF (@EmlMsg IS NOT NULL)
-	  BEGIN
-         DECLARE @GdprDefaultSensitivity AS Integer = (SELECT MIN(Sensitivity) FROM $(MonitorDB).[dbo].[GdprSensitivity]) 
-         /*update $(MonitorDB).[dbo].[Configuration] 
-           SET ConfigurationValue = @GdprDefaultSensitivity
-             WHERE  ConfigurationName='GdprDefaultSensitivity'*/
-		SET @Zprava = 'Error in GDPR'-- - I repair it'
-		SET @Specif = ''
-		SET @Severity = 0
-		SET @OpakpoMin = 1440
-		EXEC [dbo].[FSC_ErrorLogProc] @Zprava,@Specif,@ProcVer,@EmlMsg,@Severity,@OpakpoMin
-      END
    ------------ OBECNÁ SEKCE: --------------------------------------
 DECLARE @StartProcTime DateTime
 declare @MonitorId AS UniqueIdentifier
@@ -628,7 +422,12 @@ DECLARE Mon_cursor CURSOR FOR
 END
 GO --------------------- 
 
-PRINT 'End of CheckRecAndEmlActivity2'
+PRINT 'End of CheckSys';
+
+         THROW 50000, 'Plánovaný konec skriptu', 1; /* --´====================================== */
+
+
+
 
 --------------------- Pomocné tabulky   ---------------------
 IF object_id('Errorlog') IS NULL
@@ -3012,7 +2811,7 @@ CREATE PROCEDURE [dbo].[SelectPhBook]
 AS
 BEGIN
 --DECLARE @MyAgentId AS UniqueIdentifier = 'ffee47c8-da99-47d3-b4e2-ca92b624ac95' -- Admin ID
-   EXEC .dbo.FSC_WriteParam  N'SELECTEDPHONEBOOK',@RecordId,N'Selected PhoneBook'
+   EXEC .dbo.WriteParam  N'SELECTEDPHONEBOOK',@RecordId,N'Selected PhoneBook'
 END
 GO
 
@@ -3271,7 +3070,7 @@ AS
 BEGIN
   DECLARE @ConfigurationValue2 AS NVARCHAR(MAX) = (SELECT ConfigurationValue FROM $(MonitorDB).[dbo].[CONFIGURATION] WITH(NOLOCK)  WHERE ConfigurationName=@ConfigurationName)
   IF @ConfigurationValue2 IS NULL
-  	  EXEC [dbo].[FSC_WriteParam] @ConfigurationName,@ConfigurationValue, @Description
+  	  EXEC [dbo].[WriteParam] @ConfigurationName,@ConfigurationValue, @Description
   ELSE
   	  SET @ConfigurationValue=@ConfigurationValue2
 	RETURN @ConfigurationValue
@@ -3305,7 +3104,7 @@ AS
 BEGIN
   DECLARE @ConfigurationValue2 AS NVARCHAR(MAX) = (SELECT ConfigurationValue FROM $(MonitorDB).[dbo].[CONFIGURATION]  WITH(NOLOCK) WHERE ConfigurationName=@ConfigurationName)
   IF @ConfigurationValue2 IS NULL
-  	  EXEC [dbo].[FSC_WriteParam] @ConfigurationName,@ConfigurationValue, @Description
+  	  EXEC [dbo].[WriteParam] @ConfigurationName,@ConfigurationValue, @Description
   ELSE
   	  SET @ConfigurationValue=@ConfigurationValue2
 	RETURN 
@@ -3366,48 +3165,6 @@ BEGIN
 END
 GO
 
-
-IF object_id('WriteParam') IS NOT NULL
- DROP  Procedure  [dbo].[WriteParam]
-GO
-IF object_id('FSC_WriteParam') IS NOT NULL
- DROP  Procedure  [dbo].[FSC_WriteParam]
-GO
--- =============================================
--- Author:		<Zbyněk Homolka>
--- Create date: <17.05.2017>
--- Description:	<Zápis parametru do Configuration>
--- Test 6.5.2020
--- =============================================
-CREATE PROCEDURE [dbo].[FSC_WriteParam]
- @ConfigurationName AS NVARCHAR(50),
- @ConfigurationValue AS NVARCHAR(MAX),
- @Description AS NVARCHAR(800)
-AS
-BEGIN
---DECLARE @MyAgentId AS UniqueIdentifier = 'ffee47c8-da99-47d3-b4e2-ca92b624ac95' -- Admin ID
-    IF NOT EXISTS (SELECT ConfigurationId FROM $(MonitorDB).[dbo].[CONFIGURATION]  WHERE ConfigurationName=@ConfigurationName)
-	  BEGIN
-	    INSERT INTO $(MonitorDB).[dbo].[Configuration]
-           (
-            [ConfigurationName]
-           ,[ConfigurationValue]
-           ,[Description]
-           ,[GroupName])
-     VALUES
-           (@ConfigurationName,
-           @ConfigurationValue,
-           @Description,
-           'Zakaznik')
-	  END
-    ELSE
-	  BEGIN
-        update $(MonitorDB).[dbo].[Configuration] 
-         SET ConfigurationValue = @ConfigurationValue
-         WHERE  ConfigurationName=@ConfigurationName
-      END
-END
-GO
 /**/
 IF object_id('UTL_ForceSPRecompilation') IS NOT NULL
  DROP  Procedure  [dbo].[UTL_ForceSPRecompilation]
@@ -3479,7 +3236,7 @@ CREATE PROCEDURE [dbo].[SelectIVRScript]
 AS
 BEGIN
 --DECLARE @MyAgentId AS UniqueIdentifier = 'ffee47c8-da99-47d3-b4e2-ca92b624ac95' -- Admin ID
-   EXEC $(FS_CUSTOM).dbo.FSC_WriteParam  N'SELECTED_IVR',@RecordId,N'Selected IVR Script'
+   EXEC $(FS_CUSTOM).dbo.WriteParam  N'SELECTED_IVR',@RecordId,N'Selected IVR Script'
 END
 
 GO
@@ -3511,19 +3268,19 @@ BEGIN
 	IF @TOCC IS NULL
 	     BEGIN
 		   SET @TOCC  = 'error@atlantis.cz'
-		   EXEC [dbo].[FSC_WriteParam] 'TOCC', @TOCC, 'E-mail addresses to which recorded problems should be sent'
+		   EXEC [dbo].[WriteParam] 'TOCC', @TOCC, 'E-mail addresses to which recorded problems should be sent'
 		 END
   declare @TOCC2 as nvarchar(200) =.dbo.FSC_GiveParam('TOCC2')
 	IF @TOCC2 IS NULL AND 1=2
 	     BEGIN
 		   SET @TOCC2  = 'servis@atlantis.cz'
-		   EXEC [dbo].[FSC_WriteParam] 'TOCC2', @TOCC2, 'E-mail addresses to which recorded problems should be sent'
+		   EXEC [dbo].[WriteParam] 'TOCC2', @TOCC2, 'E-mail addresses to which recorded problems should be sent'
 		 END
   declare @TOCC3 as nvarchar(200) =.dbo.FSC_GiveParam('TOCC3')
 	IF @TOCC3 IS NULL
 	     BEGIN
 		   SET @TOCC3  = ''
-		   EXEC [dbo].[FSC_WriteParam] 'TOCC3', @TOCC3, 'E-mail addresses to which recorded problems should be sent'
+		   EXEC [dbo].[WriteParam] 'TOCC3', @TOCC3, 'E-mail addresses to which recorded problems should be sent'
 		 END
 --
 DECLARE @Inform1 AS Bit, @Inform2 AS Bit, @Inform3 AS Bit
